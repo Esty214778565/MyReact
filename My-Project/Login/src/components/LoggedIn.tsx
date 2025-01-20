@@ -1,16 +1,22 @@
-import { FormEvent, useContext, useRef, useState } from "react"
+import { createContext, FormEvent, useContext, useRef, useState } from "react"
 import { User } from "../UserModel"
-import { style, UserContext } from "./HomePage"
+import { style, UserContext, UserIdContext } from "./HomePage"
 import { ThemeContext } from "@emotion/react"
 import { Avatar, Box, Button, Modal, styled, TextField } from "@mui/material"
 import { deepOrange, deepPurple } from "@mui/material/colors"
 import { functionContext } from "./HomePage"
+import axios from "axios"
 
 
 const LoggedIn = () => {
     const myUser = useContext(UserContext)
+    console.log("myuser:" + myUser);
+    const userID = useContext(UserIdContext)
+    console.log("userid"+userID);
+
     const myFunc = useContext(functionContext)
     const [open, setOpen] = useState(false)
+    const url = "http://localhost:3000/api/user";
 
 
     const firstNameRef = useRef<HTMLInputElement>(null)
@@ -19,11 +25,12 @@ const LoggedIn = () => {
     const emailRef = useRef<HTMLInputElement>(null)
     const addressRef = useRef<HTMLInputElement>(null)
     const phoneRef = useRef<HTMLInputElement>(null)
-
+    // const [userID, setUserID] = useState<number>()
 
 
     return (
         <>
+            <h1>Details User: {myUser.firstName} {myUser.phone}</h1>
             <Avatar sx={{ bgcolor: deepOrange[500] }}>{myUser.firstName?.charAt(0)}</Avatar>
 
             <h1>Hello {myUser.firstName}</h1>
@@ -32,22 +39,52 @@ const LoggedIn = () => {
 
             <Modal open={open} onClose={() => setOpen(false)}>
                 <Box sx={style}>
-                    <form onSubmit={(e) => {
+                    <form onSubmit={async (e) => {
                         e.preventDefault()
-                        setOpen(false)
 
-                        myFunc({
-                            type: 'UPDATE',
-                            data: {
-                                firstName: firstNameRef.current?.value || '',
-                                lastName: lastNameRef.current?.value || '',
-                                password: passwordRef.current?.value || '',
-                                email: emailRef.current?.value || '',
-                                address: addressRef.current?.value || '',
-                                phone: phoneRef.current?.value || '',
+                        try {
+
+                            const res = await axios.put(url, {
+                                firstName: firstNameRef.current?.value,
+                                lastName: lastNameRef.current?.value,
+                                email: emailRef.current?.value,
+                                password: passwordRef.current?.value,
+                                phone: phoneRef.current?.value
+                            }, { headers: { 'user-id': userID + '' } })
+
+                            setOpen(false)
+
+                            myFunc({
+                                type: 'UPDATE',
+                                data: {
+                                    firstName: firstNameRef.current?.value || '',
+                                    lastName: lastNameRef.current?.value || '',
+                                    password: passwordRef.current?.value || '',
+                                    email: emailRef.current?.value || '',
+                                    address: addressRef.current?.value || '',
+                                    phone: phoneRef.current?.value || '',
+                                    id: userID
+                                }
                             }
+                            )
                         }
-                        )
+                        catch (e) {
+                            console.log(e);
+
+
+                            if (e.status === 404) {
+                                alert("not found");
+                            }
+
+                        }
+                        finally {
+                            firstNameRef.current!.value = ''
+                            lastNameRef.current!.value = ''
+                            emailRef.current!.value = ''
+                            passwordRef.current!.value = ''
+                            addressRef.current!.value = ''
+                            phoneRef.current!.value = ''
+                        }
                     }}>
                         <TextField label='firstName' value={myUser.firstName} inputRef={firstNameRef} />
                         <TextField label='lastName' value={myUser.lastName} inputRef={lastNameRef} />

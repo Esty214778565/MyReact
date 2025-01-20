@@ -3,8 +3,9 @@ export type User = {
     lastName?: string,
     email?: string,
     password?: string,
-    address?: string
-    phone?: string
+    address?: string,
+    phone?: string,
+    id?: number
 }
 
 export type action = {
@@ -18,6 +19,7 @@ const UserReducer = (state: User, action: action): User => {
             state.firstName = action.data.firstName !== state.firstName ? action.data.firstName : state.firstName
             state.lastName = action.data.lastName !== state.lastName ? action.data.lastName : state.lastName
             state.password = action.data.password !== state.password ? action.data.password : state.password
+            state.id = action.data.id !== state.id ? action.data.id : state.id
             return state
         case 'UPDATE':
             return { ...state, ...action.data }
