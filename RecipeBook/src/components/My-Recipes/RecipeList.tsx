@@ -1,14 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, fetchRecipes, RootState } from "./RecipeStore";
-import { useEffect } from "react";
-import { RecipeType } from "../../type";
-import { Box, List, ListItem, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { RecipeType } from "./type";
+import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import { Fastfood } from '@mui/icons-material';
 import { useNavigate } from "react-router";
 
 const RecipeList = () => {
     const dispatch = useDispatch<AppDispatch>()
     const recipes = useSelector((state: RootState) => state.recipes.recipes)
+    const [showRecipes, setShowRecipes] = useState(false);
 
     const navigate = useNavigate();
 
@@ -20,23 +21,32 @@ const RecipeList = () => {
     useEffect(() => {
         dispatch(fetchRecipes());
     }, [dispatch])
+    const toggleRecipes = () => {
+        setShowRecipes(true);
+    };
 
     return (
-        <div>
+        <Box
+            sx={{
+                position: 'fixed',
+                top: '20%',
+                right: '0',
+                width: '250px',
+                bgcolor: 'transparent',
+                p: 2,
+                borderRadius: 2,
+                overflowY: 'auto',
+                maxHeight: '80%',
+            }}
+        >
 
-            <Box
-                sx={{
-                    position: 'fixed',
-                    top: '20%',
-                    right: '0',
-                    width: '250px',
-                    bgcolor: 'transparent',
-                    p: 2,
-                    borderRadius: 2,
-                    overflowY: 'auto',
-                    maxHeight: '80%',
-                }}
-            >
+            {!showRecipes && <Box display="flex" justifyContent="flex-end" alignItems="flex-start" height="100vh">
+                <Button variant="contained" onClick={toggleRecipes} style={{ marginRight: '20px' }}>
+                    {showRecipes ? 'Hide Recipes' : 'Show Recipes'}
+                </Button>
+            </Box>}
+
+            {showRecipes && (<div>
                 <Typography variant="h6" sx={{ mb: 2, color: '#1976d2' }}>
                     My Recipes
                 </Typography>
@@ -60,10 +70,11 @@ const RecipeList = () => {
                         </ListItem>
                     ))}
                 </List>
-
-            </Box>
-        </div>
+            </div>)}
+        </Box>
     );
 };
 
 export default RecipeList;
+
+

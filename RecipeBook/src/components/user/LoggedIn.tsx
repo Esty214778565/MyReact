@@ -1,15 +1,15 @@
 import { useContext, useRef, useState } from "react"
-import { UserContext } from "./HomePage"
+import { UserContext } from "../HomePage"
 import { Avatar, Box, Button, Modal, TextField } from "@mui/material"
 import axios from "axios"
-import { style } from "../My-Style"
+import { style } from "../style/My-Style"
 
 const LoggedIn = () => {
     const [myUser, setMyUser] = useContext(UserContext);
     const [open, setOpen] = useState(false);
     const url = "http://localhost:3000/api/user";
 
-    const firstNameRef = useRef<HTMLInputElement>()
+    const firstNameRef = useRef<HTMLInputElement>(null)
     const lastNameRef = useRef<HTMLInputElement>(null)
     const passwordRef = useRef<HTMLInputElement>(null)
     const emailRef = useRef<HTMLInputElement>(null)
@@ -72,10 +72,12 @@ const LoggedIn = () => {
                             }
                             )
                         }
-                        catch (e: any) {
+                        catch (e) {
                             console.log(e);
-                            if (e.status === 404) {
-                                alert("User not found");
+                            if (axios.isAxiosError(e)) {
+                                if (e.status === 404) {
+                                    alert("User not found");
+                                }
                             }
                         }
                         finally {

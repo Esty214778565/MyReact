@@ -1,13 +1,13 @@
 import { createContext, Dispatch, useReducer, useRef, useState } from "react"
 import { Button, Grid2 as Grid, Modal, Box, TextField } from "@mui/material";
-import UserReducer, { action, User } from "../UserModel";
-import LoggedIn from "./LoggedIn";
+import UserReducer, { action, User } from "./user/UserModel";
+import LoggedIn from "./user/LoggedIn";
 import axios from "axios";
 import RecipeList from "./My-Recipes/RecipeList";
 import { Outlet } from "react-router";
 import AddRecipe from "./My-Recipes/AddRecipe";
-import { style } from "../My-Style";
-import Img from "../Img";
+import { style } from "./style/My-Style";
+import Img from "./style/Img";
 
 
 export const UserContext = createContext<[User, Dispatch<action>]>([{ firstName: 'fff', lastName: "dgd", password: "546456" }, () => { }]);
@@ -45,17 +45,19 @@ const HomePage = () => {
 
             setIsLogin(true)
         }
-        catch (e: any) {
-            switch (e.status) {
-                case 400:
-                    alert("the user already exist");
-                    break;
-                case 401:
-                    alert("User does not exist")
-                    break;
-                case 422:
-                    alert("Sorry but this user already exists");
-                    break;
+        catch (e) {
+            if (axios.isAxiosError(e)) {
+                switch (e.status) {
+                    case 400:
+                        alert("the user already exist");
+                        break;
+                    case 401:
+                        alert("User does not exist")
+                        break;
+                    case 422:
+                        alert("Sorry but this user already exists");
+                        break;
+                }
             }
         }
         finally {
@@ -74,10 +76,10 @@ const HomePage = () => {
                             <Button style={{ margin: '0.5em' }} color="primary" variant="contained" onClick={() => { setOpen(!open); setEnter("/login") }}>Login</Button>
                             <Button style={{ margin: '0.5em' }} color="primary" variant="contained" onClick={() => { setOpen(!open); setEnter("/register") }}>Register</Button>
                         </div> :
-                        <UserContext.Provider value={[user, userDispatch]}>
+                        <UserContext value={[user, userDispatch]}>
                             <LoggedIn />
                             <AddRecipe />
-                        </UserContext.Provider>
+                        </UserContext>
                     }
                 </Grid>
             </Grid>

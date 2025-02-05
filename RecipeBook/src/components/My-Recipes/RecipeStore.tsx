@@ -1,7 +1,7 @@
 import axios from "axios"
-import { RecipeType } from "../../type";
+import { RecipeType } from "./type";
 import { configureStore, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { User } from "../../UserModel";
+import { User } from "../user/UserModel";
 
 export const fetchRecipes = createAsyncThunk('recipes/fetch', async (_, thunkAPI) => {
     try {

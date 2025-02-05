@@ -16,13 +16,13 @@ const NavBar = () => {
                 top: 0,
                 right: 0,
                 padding: 2,
-                zIndex: 1,
+                zIndex: 1
             }}
         >
             <nav>
-                <Link to='/'>HomePage</Link> |
-                <Link to='/about'>About</Link> |
-                <Link to={`/loggedin/${user.firstName}`}>about user</Link>
+                <Link to='/' style={{ color: '#3f51b5' }}>HomePage</Link> |
+                <Link to='/about' style={{ color: '#3f51b5' }}>About</Link> |
+                <Link to={`/loggedin/${user.firstName}`} style={{ color: '#3f51b5' }}>about user</Link>
                 <NavLink to='/rer' />
             </nav>
         </Box>

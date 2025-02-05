@@ -1,5 +1,5 @@
 import './App.css'
-import Begin from './Begin'
+import Begin from './components/Begin'
 
 function App() {
   return (<>

@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useForm } from "react-hook-form"
 import { object, string } from "yup"
-import { RecipeType } from "../../type"
+import { RecipeType } from "./type"
 import { AppDispatch, fetchAddRecipe } from "./RecipeStore"
 import { useDispatch } from "react-redux"
 import { useContext, useState } from "react"
